@@ -3,584 +3,143 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🚀 Crypto Miner MAX</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>🚀 Crypto Miner</title>
     <style>
-        :root {
-            --tg-theme-bg-color: #0f0f23;
-            --tg-theme-text-color: #ffffff;
-            --tg-theme-hint-color: #a1a1a1;
-            --tg-theme-link-color: #00ff88;
-            --tg-theme-button-color: #00ff88;
-            --tg-theme-button-text-color: #000000;
-            --primary: #00ff88;
-            --secondary: #0099ff;
-            --accent: #ff3366;
-            --warning: #ffaa00;
-            --premium: #ffd700;
-            --card-bg: rgba(30, 30, 46, 0.95);
-            --neon-glow: 0 0 20px rgba(0, 255, 136, 0.5);
-        }
-
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--tg-theme-bg-color, radial-gradient(circle at top, #0f0f23 0%, #000000 100%));
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            color: var(--tg-theme-text-color, #ffffff);
-            overflow-x: hidden;
+            color: white;
+            padding: 20px;
         }
 
         .container {
-            max-width: 100%;
+            max-width: 400px;
             margin: 0 auto;
-            padding: 15px;
-            padding-bottom: 100px;
-        }
-
-        /* Анимированный фон */
-        .bg-animation {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
-        .particle {
-            position: absolute;
-            background: var(--primary);
-            border-radius: 50%;
-            animation: float 20s infinite linear;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(100vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-100px) rotate(360deg); opacity: 0; }
         }
 
         .header {
             text-align: center;
-            margin-bottom: 25px;
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 153, 255, 0.1));
-            padding: 25px 20px;
-            border-radius: 30px;
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(0, 255, 136, 0.2);
-            box-shadow: var(--neon-glow);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 255, 136, 0.1), transparent);
-            animation: shimmer 3s infinite;
-        }
-
-        @keyframes shimmer {
-            0% { left: -100%; }
-            100% { left: 100%; }
-        }
-
-        .user-card {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 15px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background: rgba(255,255,255,0.1);
             border-radius: 20px;
-            margin-bottom: 15px;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .avatar {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: black;
-            font-size: 1.2rem;
-            box-shadow: var(--neon-glow);
-        }
-
-        .user-stats {
-            display: flex;
-            gap: 15px;
-        }
-
-        .stat-badge {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 8px 15px;
-            border-radius: 15px;
-            text-align: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .stat-value {
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--primary);
-        }
-
-        .stat-label {
-            font-size: 0.7rem;
-            opacity: 0.8;
         }
 
         .card {
-            background: var(--card-bg);
-            border-radius: 25px;
-            padding: 25px;
-            margin-bottom: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            position: relative;
-            overflow: hidden;
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
-        }
-
-        .card:hover {
-            transform: translateY(-8px) scale(1.02);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.4), var(--neon-glow);
-        }
-
-        .balance-section {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.15), rgba(0, 153, 255, 0.15));
+        .balance {
             text-align: center;
-            color: white;
+            font-size: 48px;
+            font-weight: bold;
+            color: #e91e63;
+            margin: 10px 0;
         }
 
-        .balance-amount {
-            font-size: 3.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin: 15px 0;
-            text-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
-            font-feature-settings: "tnum";
-        }
-
-        .stats-grid {
+        .stats {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 15px;
-            margin: 20px 0;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 15px 0;
         }
 
-        .stat-item {
+        .stat {
             text-align: center;
-            padding: 20px 15px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-            position: relative;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 10px;
         }
 
-        .stat-item::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, var(--primary), transparent);
-            border-radius: 20px 20px 0 0;
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
         }
 
-        .mine-section {
-            text-align: center;
-            position: relative;
+        .stat-label {
+            font-size: 12px;
+            color: #666;
         }
 
         .mine-button {
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle at center, #00ff88 0%, #00cc66 100%);
+            width: 120px;
+            height: 120px;
+            background: #FFD700;
             border: none;
             border-radius: 50%;
-            margin: 30px auto;
+            margin: 20px auto;
             display: block;
             cursor: pointer;
-            font-size: 4.5rem;
-            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.4), 0 0 60px rgba(0, 255, 136, 0.3);
-            position: relative;
-            overflow: hidden;
+            font-size: 40px;
+            transition: transform 0.1s;
         }
 
         .mine-button:active {
-            transform: scale(0.85);
-            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.6), 0 0 40px rgba(0, 255, 136, 0.4);
+            transform: scale(0.95);
         }
 
-        .boost-indicator {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: linear-gradient(135deg, var(--accent), #ff0066);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 25px;
-            font-size: 0.9rem;
-            font-weight: bold;
-            animation: pulse-glow 1s infinite;
-            box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
-            z-index: 10;
+        .upgrades {
+            margin-top: 20px;
         }
 
-        @keyframes pulse-glow {
-            0%, 100% { 
-                transform: scale(1);
-                box-shadow: 0 0 20px rgba(255, 51, 102, 0.6);
-            }
-            50% { 
-                transform: scale(1.05);
-                box-shadow: 0 0 30px rgba(255, 51, 102, 0.8);
-            }
-        }
-
-        .tab-navigation {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 25px;
-            background: var(--card-bg);
-            border-radius: 30px;
-            padding: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-            position: sticky;
-            top: 10px;
-            z-index: 100;
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .tab-button {
-            flex: 1;
-            padding: 18px 12px;
-            text-align: center;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 0.95rem;
-            border-radius: 25px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            color: var(--tg-theme-text-color, #ffffff);
-            position: relative;
-        }
-
-        .tab-button.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000000;
-            transform: scale(1.08);
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.4);
-            font-weight: bold;
-        }
-
-        .tab-badge {
-            background: var(--accent);
-            color: white;
-            border-radius: 50%;
-            width: 22px;
-            height: 22px;
-            font-size: 0.75rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            animation: badge-pulse 2s infinite;
-        }
-
-        @keyframes badge-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
-        .upgrade-item {
+        .upgrade {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            margin-bottom: 15px;
-            border-left: 4px solid var(--primary);
-            transition: all 0.3s ease;
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            margin-bottom: 10px;
         }
 
         .upgrade-button {
-            background: var(--tg-theme-button-color, var(--primary));
-            color: var(--tg-theme-button-text-color, #000000);
+            background: #4CAF50;
+            color: white;
             border: none;
-            padding: 15px 25px;
-            border-radius: 20px;
+            padding: 8px 15px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            font-weight: 700;
-            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
-        }
-
-        .upgrade-button:hover:not(:disabled) {
-            transform: scale(1.05) translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.5);
         }
 
         .upgrade-button:disabled {
-            background: #666;
+            background: #ccc;
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
-        .click-animation {
-            position: fixed;
-            pointer-events: none;
-            font-weight: 900;
-            font-size: 1.6rem;
-            color: var(--primary);
-            animation: floatUp 1.2s ease-out forwards;
-            z-index: 1000;
-            text-shadow: 0 0 20px currentColor;
-        }
-
-        @keyframes floatUp {
-            0% {
-                transform: translateY(0) scale(1) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-120px) scale(1.8) rotate(10deg);
-                opacity: 0;
-            }
-        }
-
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000000;
-            padding: 18px 30px;
-            border-radius: 25px;
-            z-index: 1000;
-            animation: slideDown 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.3), var(--neon-glow);
-            max-width: 90%;
-            text-align: center;
-            backdrop-filter: blur(30px);
-            font-weight: 700;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        @keyframes slideDown {
-            from {
-                transform: translateX(-50%) translateY(-100%);
-                opacity: 0;
-            }
-            to {
-                transform: translateX(-50%) translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .achievement-popup {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000000;
-            padding: 40px 30px;
-            border-radius: 35px;
-            z-index: 1001;
-            text-align: center;
-            animation: achievementPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-            box-shadow: 0 25px 60px rgba(0,0,0,0.5), 0 0 50px rgba(0, 255, 136, 0.4);
-            backdrop-filter: blur(40px);
-            border: 2px solid rgba(255,255,255,0.4);
-            max-width: 85%;
-        }
-
-        @keyframes achievementPop {
-            0% { transform: translate(-50%, -50%) scale(0); }
-            70% { transform: translate(-50%, -50%) scale(1.1); }
-            100% { transform: translate(-50%, -50%) scale(1); }
-        }
-
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: var(--card-bg);
-            padding: 20px 15px;
+        .tabs {
             display: flex;
-            justify-content: space-around;
-            border-top-left-radius: 35px;
-            border-top-right-radius: 35px;
-            box-shadow: 0 -10px 35px rgba(0,0,0,0.4);
-            backdrop-filter: blur(30px);
-            z-index: 1000;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 5px;
         }
 
-        .nav-button {
+        .tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
             background: none;
             border: none;
-            padding: 15px 20px;
-            border-radius: 20px;
+            color: white;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            color: var(--tg-theme-text-color, #ffffff);
-            position: relative;
+            border-radius: 10px;
         }
 
-        .nav-button.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #000000;
-            transform: translateY(-8px) scale(1.1);
-            box-shadow: 0 10px 25px rgba(0, 255, 136, 0.4);
-            font-weight: bold;
-        }
-
-        .loading-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center, #0f0f23 0%, #000000 100%);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            color: var(--primary);
-        }
-
-        .loader {
-            width: 60px;
-            height: 60px;
-            border: 3px solid rgba(0, 255, 136, 0.3);
-            border-top: 3px solid var(--primary);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-            margin-bottom: 25px;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .progress-ring {
-            width: 80px;
-            height: 80px;
-        }
-
-        .progress-ring-circle {
-            stroke: var(--primary);
-            stroke-width: 4;
-            stroke-linecap: round;
-            fill: transparent;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-
-        /* Адаптивность */
-        @media (max-width: 380px) {
-            .balance-amount { font-size: 3rem; }
-            .mine-button { width: 160px; height: 160px; font-size: 4rem; }
-            .tab-button { padding: 15px 8px; font-size: 0.8rem; }
-            .user-card { flex-direction: column; gap: 15px; }
-        }
-
-        /* Специальные эффекты */
-        .particles-container {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .cyber-grid {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                linear-gradient(rgba(0, 255, 136, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 255, 136, 0.1) 1px, transparent 1px);
-            background-size: 50px 50px;
-            animation: grid-move 20s linear infinite;
-            z-index: -1;
-            opacity: 0.3;
-        }
-
-        @keyframes grid-move {
-            0% { transform: translate(0, 0); }
-            100% { transform: translate(50px, 50px); }
+        .tab.active {
+            background: rgba(255,255,255,0.2);
         }
 
         .tab-content {
@@ -591,745 +150,382 @@
             display: block;
         }
 
-        /* Анимация появления */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            z-index: 1000;
         }
     </style>
 </head>
 <body>
-    <div class="cyber-grid"></div>
-    <div class="particles-container" id="particlesContainer"></div>
-
-    <div class="loading-screen" id="loadingScreen">
-        <div class="loader"></div>
-        <div style="margin-top: 20px; font-size: 1.1rem; font-weight: 700;">
-            Инициализация майнера...
-        </div>
-        <div style="margin-top: 10px; font-size: 0.9rem; opacity: 0.8;" id="loadingProgress">
-            Загрузка: 0%
-        </div>
-    </div>
-
-    <div class="container" id="mainContent" style="display: none;">
-        <!-- Верхняя панель пользователя -->
-        <div class="user-card">
-            <div class="user-info">
-                <div class="avatar" id="userAvatar">
-                    <i class="fas fa-user"></i>
-                </div>
-                <div>
-                    <div style="font-weight: 700; font-size: 1.1rem;" id="userName">Загрузка...</div>
-                    <div style="font-size: 0.8rem; opacity: 0.8;">ID: <span id="userId">000000</span></div>
-                </div>
-            </div>
-            <div class="user-stats">
-                <div class="stat-badge">
-                    <div class="stat-value" id="userLevel">1</div>
-                    <div class="stat-label">Уровень</div>
-                </div>
-                <div class="stat-badge">
-                    <div class="stat-value" id="userRank">#---</div>
-                    <div class="stat-label">Ранг</div>
-                </div>
-            </div>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Crypto Miner</h1>
+            <p>Майни криптовалюту!</p>
         </div>
 
-        <!-- Навигация -->
-        <div class="tab-navigation">
-            <button class="tab-button active" onclick="switchTab('mine')">
-                <i class="fas fa-digging"></i>
-                <span>Майнинг</span>
-                <span class="tab-badge" id="mineBadge" style="display: none;">!</span>
-            </button>
-            <button class="tab-button" onclick="switchTab('upgrades')">
-                <i class="fas fa-tools"></i>
-                <span>Улучшения</span>
-                <span class="tab-badge" id="upgradeBadge" style="display: none;"></span>
-            </button>
-            <button class="tab-button" onclick="switchTab('boosters')">
-                <i class="fas fa-bolt"></i>
-                <span>Бустеры</span>
-                <span class="tab-badge" id="boosterBadge" style="display: none;"></span>
-            </button>
-            <button class="tab-button" onclick="switchTab('profile')">
-                <i class="fas fa-user-cog"></i>
-                <span>Профиль</span>
-                <span class="tab-badge" id="profileBadge" style="display: none;"></span>
-            </button>
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('mine')">⛏️ Майнинг</button>
+            <button class="tab" onclick="switchTab('upgrades')">🔧 Улучшения</button>
+            <button class="tab" onclick="switchTab('stats')">📊 Статистика</button>
         </div>
 
-        <!-- Контент вкладок -->
+        <!-- Вкладка Майнинг -->
         <div id="mine" class="tab-content active">
-            <div class="card balance-section">
-                <div style="font-size: 0.9rem; opacity: 0.9;">Ваш баланс</div>
-                <div class="balance-amount" id="balance">0</div>
-                <div style="font-size: 0.9rem; opacity: 0.9;">BTC</div>
+            <div class="card">
+                <div style="text-align: center; color: #666;">Ваш баланс</div>
+                <div class="balance" id="balance">0</div>
+                <div style="text-align: center; color: #666;">BTC</div>
             </div>
 
             <div class="card">
-                <div class="stats-grid">
-                    <div class="stat-item">
+                <div class="stats">
+                    <div class="stat">
                         <div class="stat-value" id="hashrate">1</div>
                         <div class="stat-label">Хешрейт</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="energy">100</div>
-                        <div class="stat-label">Энергия</div>
+                    <div class="stat">
+                        <div class="stat-value" id="level">1</div>
+                        <div class="stat-label">Уровень</div>
                     </div>
-                    <div class="stat-item">
+                    <div class="stat">
                         <div class="stat-value" id="totalMined">0</div>
                         <div class="stat-label">Всего добыто</div>
                     </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="autoIncome">0</div>
-                        <div class="stat-label">Авто/сек</div>
+                    <div class="stat">
+                        <div class="stat-value" id="energy">100</div>
+                        <div class="stat-label">Энергия</div>
                     </div>
                 </div>
             </div>
 
-            <div class="card mine-section">
-                <button class="mine-button" id="mineButton">
-                    ⛏️
-                </button>
-                <div class="boost-indicator" id="boostIndicator" style="display: none;">
-                    BOOST x2!
-                </div>
-
-                <div style="text-align: center; margin-top: 20px;">
-                    <div style="font-size: 0.9rem; color: var(--tg-theme-hint-color, #666);">
-                        Нажимайте для майнинга!
-                    </div>
+            <div class="card">
+                <button class="mine-button" id="mineButton">⛏️</button>
+                <div style="text-align: center; color: #666; margin-top: 10px;">
+                    Нажимайте для майнинга!
                 </div>
             </div>
         </div>
 
+        <!-- Вкладка Улучшения -->
         <div id="upgrades" class="tab-content">
             <div class="card">
-                <h3 style="text-align: center; margin-bottom: 20px;">🔧 Система улучшений</h3>
+                <h3 style="text-align: center; margin-bottom: 15px;">🔧 Улучшения</h3>
                 
-                <div class="upgrade-item">
-                    <div style="flex: 1;">
-                        <div style="font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                            💻 Базовый ПК
-                            <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem;">
-                                Ур. <span id="upgradePcLevel">0</span>
-                            </span>
-                        </div>
-                        <div style="font-size: 0.8rem; color: var(--tg-theme-hint-color, #666); margin: 5px 0;">
-                            +0.5 H/s к ручному майнингу
-                        </div>
-                        <div style="font-size: 0.85rem; color: var(--accent); font-weight: bold;">
-                            <span id="upgradePcCost">50</span> BTC
-                        </div>
+                <div class="upgrade">
+                    <div>
+                        <div style="font-weight: bold;">💻 Базовый ПК</div>
+                        <div style="font-size: 12px; color: #666;">+0.5 H/s</div>
+                        <div style="color: #e91e63; font-weight: bold;" id="upgradePcCost">50 BTC</div>
                     </div>
                     <button class="upgrade-button" onclick="buyUpgrade('pc')" id="upgradePcBtn">
                         Купить
                     </button>
                 </div>
 
-                <div class="upgrade-item">
-                    <div style="flex: 1;">
-                        <div style="font-weight: bold; display: flex; align-items: center; gap: 8px;">
-                            🎮 Игровая видеокарта
-                            <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem;">
-                                Ур. <span id="upgradeGpuLevel">0</span>
-                            </span>
-                        </div>
-                        <div style="font-size: 0.8rem; color: var(--tg-theme-hint-color, #666); margin: 5px 0;">
-                            +2 H/s к ручному майнингу
-                        </div>
-                        <div style="font-size: 0.85rem; color: var(--accent); font-weight: bold;">
-                            <span id="upgradeGpuCost">200</span> BTC
-                        </div>
+                <div class="upgrade">
+                    <div>
+                        <div style="font-weight: bold;">🎮 Видеокарта</div>
+                        <div style="font-size: 12px; color: #666;">+2 H/s</div>
+                        <div style="color: #e91e63; font-weight: bold;" id="upgradeGpuCost">200 BTC</div>
                     </div>
                     <button class="upgrade-button" onclick="buyUpgrade('gpu')" id="upgradeGpuBtn">
+                        Купить
+                    </button>
+                </div>
+
+                <div class="upgrade">
+                    <div>
+                        <div style="font-weight: bold;">💠 ASIC майнер</div>
+                        <div style="font-size: 12px; color: #666;">+1 BTC/сек</div>
+                        <div style="color: #e91e63; font-weight: bold;" id="upgradeAsicCost">500 BTC</div>
+                    </div>
+                    <button class="upgrade-button" onclick="buyUpgrade('asic')" id="upgradeAsicBtn">
                         Купить
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="boosters" class="tab-content">
+        <!-- Вкладка Статистика -->
+        <div id="stats" class="tab-content">
             <div class="card">
-                <h3 style="text-align: center; margin-bottom: 20px;">⚡ Бустеры</h3>
-                <div style="text-align: center; color: var(--tg-theme-hint-color, #666);">
-                    Система бустеров в разработке...
+                <h3 style="text-align: center; margin-bottom: 15px;">📊 Статистика</h3>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value" id="statClicks">0</div>
+                        <div class="stat-label">Кликов</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="statTime">0</div>
+                        <div class="stat-label">Время игры</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="statBoosters">0</div>
+                        <div class="stat-label">Бустеры</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value" id="statRank">#---</div>
+                        <div class="stat-label">Ранг</div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div id="profile" class="tab-content">
-            <div class="card">
-                <h3 style="text-align: center; margin-bottom: 20px;">👤 Профиль</h3>
-                <div style="text-align: center; color: var(--tg-theme-hint-color, #666);">
-                    Профиль пользователя в разработке...
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Нижняя навигация -->
-    <div class="bottom-nav">
-        <button class="nav-button active" onclick="switchTab('mine')">
-            <i class="fas fa-digging"></i>
-            <span>Майнинг</span>
-        </button>
-        <button class="nav-button" onclick="switchTab('upgrades')">
-            <i class="fas fa-tools"></i>
-            <span>Улучшения</span>
-        </button>
-        <button class="nav-button" onclick="switchTab('boosters')">
-            <i class="fas fa-bolt"></i>
-            <span>Бустеры</span>
-        </button>
-        <button class="nav-button" onclick="switchTab('profile')">
-            <i class="fas fa-user-cog"></i>
-            <span>Профиль</span>
-        </button>
     </div>
 
     <script>
-        // Основной класс приложения
-        class CryptoMinerMAX {
-            constructor() {
-                this.tg = window.Telegram.WebApp;
-                this.isPremium = false;
-                this.gameData = null;
-                this.holdTimer = null;
-                this.init();
-            }
+        // Простая игровая логика
+        const gameData = {
+            balance: 0,
+            hashrate: 1,
+            level: 1,
+            totalMined: 0,
+            energy: 100,
+            maxEnergy: 100,
+            upgrades: {
+                pc: { level: 0, cost: 50 },
+                gpu: { level: 0, cost: 200 },
+                asic: { level: 0, cost: 500 }
+            },
+            statistics: {
+                clicks: 0,
+                playTime: 0,
+                boostersUsed: 0
+            },
+            lastUpdate: Date.now()
+        };
 
-            async init() {
+        // Загрузка сохраненной игры
+        function loadGame() {
+            const saved = localStorage.getItem('cryptoMinerSave');
+            if (saved) {
                 try {
-                    await this.setupTelegram();
-                    await this.createParticles();
-                    await this.loadGameData();
-                    this.setupEventListeners();
-                    this.startGameLoop();
-                    this.hideLoadingScreen();
-                } catch (error) {
-                    console.error('Initialization error:', error);
-                    this.hideLoadingScreen();
+                    const data = JSON.parse(saved);
+                    Object.assign(gameData, data);
+                } catch (e) {
+                    console.log('Ошибка загрузки:', e);
                 }
             }
+            updateDisplay();
+        }
 
-            async setupTelegram() {
-                if (!this.tg) {
-                    console.warn('Telegram Web App not available');
-                    return;
-                }
+        // Сохранение игры
+        function saveGame() {
+            gameData.lastUpdate = Date.now();
+            localStorage.setItem('cryptoMinerSave', JSON.stringify(gameData));
+        }
 
-                this.tg.expand();
-                this.tg.enableClosingConfirmation();
+        // Майнинг
+        function mine() {
+            if (gameData.energy <= 0) {
+                showNotification('⚡ Недостаточно энергии!');
+                return;
+            }
+
+            const mined = gameData.hashrate;
+            gameData.balance += mined;
+            gameData.totalMined += mined;
+            gameData.energy -= 1;
+            gameData.statistics.clicks++;
+
+            updateDisplay();
+            saveGame();
+
+            // Создаем анимацию клика
+            createClickAnimation(mined);
+        }
+
+        // Покупка улучшения
+        function buyUpgrade(type) {
+            const upgrade = gameData.upgrades[type];
+            
+            if (gameData.balance >= upgrade.cost) {
+                gameData.balance -= upgrade.cost;
+                upgrade.level++;
+                upgrade.cost = Math.floor(upgrade.cost * 1.5);
                 
-                this.isPremium = this.tg.initDataUnsafe?.user?.is_premium || false;
-                this.setupMainButton();
-                this.loadUserProfile();
-            }
-
-            setupMainButton() {
-                if (!this.tg?.MainButton) return;
+                // Применяем эффекты улучшений
+                switch(type) {
+                    case 'pc':
+                        gameData.hashrate += 0.5;
+                        break;
+                    case 'gpu':
+                        gameData.hashrate += 2;
+                        break;
+                }
                 
-                if (!this.isPremium) {
-                    this.tg.MainButton.setText('💎 АКТИВИРОВАТЬ ПРЕМИУМ');
-                    this.tg.MainButton.color = '#ffd700';
-                    this.tg.MainButton.textColor = '#000000';
-                    this.tg.MainButton.show();
-                    this.tg.MainButton.onClick(() => this.showPremiumOffer());
-                }
-            }
-
-            loadUserProfile() {
-                const user = this.tg?.initDataUnsafe?.user;
-                if (user) {
-                    document.getElementById('userName').textContent = user.first_name || 'Аноним';
-                    document.getElementById('userId').textContent = String(user.id || '000000').slice(-6);
-                    
-                    const avatar = document.getElementById('userAvatar');
-                    if (user.photo_url) {
-                        avatar.style.backgroundImage = `url(${user.photo_url})`;
-                        avatar.style.backgroundSize = 'cover';
-                        avatar.innerHTML = '';
-                    } else {
-                        const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
-                        avatar.innerHTML = initial;
-                    }
-                }
-            }
-
-            async createParticles() {
-                const container = document.getElementById('particlesContainer');
-                if (!container) return;
-
-                for (let i = 0; i < 30; i++) {
-                    const particle = document.createElement('div');
-                    particle.className = 'particle';
-                    particle.style.width = `${Math.random() * 4 + 1}px`;
-                    particle.style.height = particle.style.width;
-                    particle.style.left = `${Math.random() * 100}%`;
-                    particle.style.animationDelay = `${Math.random() * 20}s`;
-                    particle.style.animationDuration = `${Math.random() * 10 + 15}s`;
-                    particle.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                    particle.style.opacity = Math.random() * 0.3 + 0.1;
-                    container.appendChild(particle);
-                }
-            }
-
-            async loadGameData() {
-                this.updateLoadingProgress(30);
-                
-                // Загрузка из Local Storage
-                const localData = localStorage.getItem('cryptoMinerMAX');
-                
-                this.updateLoadingProgress(70);
-                
-                // Объединение данных
-                this.gameData = this.mergeGameData(localData);
-                
-                this.updateLoadingProgress(100);
-            }
-
-            mergeGameData(localData) {
-                const defaultData = {
-                    version: '2.0.0',
-                    balance: 100,
-                    hashrate: 1,
-                    level: 1,
-                    experience: 0,
-                    totalMined: 0,
-                    energy: 100,
-                    maxEnergy: 100,
-                    upgrades: {
-                        pc: { level: 0, cost: 50 },
-                        gpu: { level: 0, cost: 200 },
-                        asic: { level: 0, cost: 500 },
-                        farm: { level: 0, cost: 2000 }
-                    },
-                    statistics: {
-                        totalClicks: 0,
-                        playTime: 0
-                    },
-                    lastUpdate: Date.now(),
-                    userId: this.tg?.initDataUnsafe?.user?.id || 'anonymous'
-                };
-
-                try {
-                    if (localData) {
-                        const parsed = JSON.parse(localData);
-                        return { ...defaultData, ...parsed };
-                    }
-                } catch (error) {
-                    console.error('Error parsing game data:', error);
-                }
-
-                return defaultData;
-            }
-
-            updateLoadingProgress(percent) {
-                const progressElement = document.getElementById('loadingProgress');
-                if (progressElement) {
-                    progressElement.textContent = `Загрузка: ${percent}%`;
-                }
-            }
-
-            hideLoadingScreen() {
-                const loadingScreen = document.getElementById('loadingScreen');
-                const mainContent = document.getElementById('mainContent');
-                
-                if (loadingScreen && mainContent) {
-                    loadingScreen.style.opacity = '0';
-                    setTimeout(() => {
-                        loadingScreen.style.display = 'none';
-                        mainContent.style.display = 'block';
-                        mainContent.style.animation = 'fadeIn 0.8s ease-out';
-                    }, 500);
-                }
-            }
-
-            // Основные игровые методы
-            mine() {
-                if (!this.gameData) return;
-
-                if (this.gameData.energy <= 0) {
-                    this.showNotification('⚡ Зарядите энергию!');
-                    return;
-                }
-
-                const baseMined = this.gameData.hashrate;
-                let mined = baseMined;
-
-                // Критический удар
-                if (Math.random() < 0.05) {
-                    mined *= 3;
-                    this.showNotification('💥 КРИТИЧЕСКИЙ УДАР! x3');
-                }
-
-                // Умножение за премиум
-                if (this.isPremium) mined *= 1.5;
-
-                this.gameData.balance += mined;
-                this.gameData.totalMined += mined;
-                this.gameData.energy -= 1;
-                this.gameData.statistics.totalClicks++;
-
-                this.createClickAnimation(mined);
-                this.updateDisplay();
-                this.checkAchievements();
-                
-                // Тактильная отдача
-                if (navigator.vibrate) {
-                    navigator.vibrate(50);
-                }
-            }
-
-            startGameLoop() {
-                // Автоматический майнинг
-                setInterval(() => this.autoMine(), 1000);
-                
-                // Восстановление энергии
-                setInterval(() => this.regenEnergy(), 2000);
-                
-                // Автосохранение
-                setInterval(() => this.saveGame(), 30000);
-                
-                // Обновление интерфейса
-                setInterval(() => this.updateDisplay(), 100);
-            }
-
-            autoMine() {
-                if (!this.gameData) return;
-
-                const now = Date.now();
-                const timePassed = (now - this.gameData.lastUpdate) / 1000;
-                
-                if (timePassed > 0) {
-                    const autoIncome = this.gameData.upgrades.asic.level * 1 + this.gameData.upgrades.farm.level * 5;
-                    const mined = autoIncome * timePassed;
-                    
-                    this.gameData.balance += mined;
-                    this.gameData.totalMined += mined;
-                    this.gameData.lastUpdate = now;
-                }
-            }
-
-            regenEnergy() {
-                if (!this.gameData) return;
-
-                if (this.gameData.energy < this.gameData.maxEnergy) {
-                    this.gameData.energy += 0.5;
-                }
-            }
-
-            async saveGame() {
-                if (!this.gameData) return;
-
-                this.gameData.lastUpdate = Date.now();
-                
-                try {
-                    localStorage.setItem('cryptoMinerMAX', JSON.stringify(this.gameData));
-                } catch (error) {
-                    console.error('Save error:', error);
-                }
-            }
-
-            buyUpgrade(type) {
-                if (!this.gameData) return;
-
-                const upgrade = this.gameData.upgrades[type];
-                if (!upgrade) return;
-
-                if (this.gameData.balance >= upgrade.cost) {
-                    this.gameData.balance -= upgrade.cost;
-                    upgrade.level++;
-                    upgrade.cost = Math.floor(upgrade.cost * 1.5);
-                    
-                    // Применяем эффекты
-                    switch(type) {
-                        case 'pc': 
-                            this.gameData.hashrate += 0.5; 
-                            break;
-                        case 'gpu': 
-                            this.gameData.hashrate += 2; 
-                            break;
-                    }
-                    
-                    this.showNotification('✅ Улучшение куплено!');
-                    this.updateDisplay();
-                    this.saveGame();
-                } else {
-                    this.showNotification('❌ Недостаточно BTC!');
-                }
-            }
-
-            showNotification(message) {
-                const notification = document.createElement('div');
-                notification.className = 'notification';
-                notification.textContent = message;
-                
-                document.body.appendChild(notification);
-                
-                setTimeout(() => {
-                    notification.style.opacity = '0';
-                    setTimeout(() => {
-                        if (notification.parentNode) {
-                            notification.parentNode.removeChild(notification);
-                        }
-                    }, 500);
-                }, 3000);
-            }
-
-            createClickAnimation(amount) {
-                const animation = document.createElement('div');
-                animation.className = 'click-animation';
-                animation.textContent = `+${amount.toFixed(1)}`;
-                
-                animation.style.left = `${Math.random() * 200 + 100}px`;
-                animation.style.top = `${Math.random() * 100 + 200}px`;
-                
-                document.body.appendChild(animation);
-                setTimeout(() => {
-                    if (animation.parentNode) {
-                        animation.parentNode.removeChild(animation);
-                    }
-                }, 1200);
-            }
-
-            setupEventListeners() {
-                // Обычный клик для майнинга
-                const mineButton = document.getElementById('mineButton');
-                if (mineButton) {
-                    mineButton.addEventListener('click', () => this.mine());
-                }
-
-                // Обработка системных событий
-                if (this.tg) {
-                    this.tg.onEvent('viewportChanged', () => this.saveGame());
-                }
-                window.addEventListener('beforeunload', () => this.saveGame());
-            }
-
-            updateDisplay() {
-                if (!this.gameData) return;
-
-                // Обновление всех элементов интерфейса
-                this.updateBalance();
-                this.updateStats();
-                this.updateEnergy();
-                this.updateLevel();
-                this.updateUpgrades();
-                this.updateBadges();
-            }
-
-            updateBalance() {
-                const balanceElement = document.getElementById('balance');
-                if (balanceElement) {
-                    balanceElement.textContent = this.gameData.balance.toFixed(1);
-                }
-            }
-
-            updateStats() {
-                if (!this.gameData) return;
-
-                const elements = {
-                    hashrate: this.gameData.hashrate.toFixed(1),
-                    totalMined: this.gameData.totalMined.toFixed(1),
-                    userLevel: this.gameData.level
-                };
-
-                Object.entries(elements).forEach(([id, value]) => {
-                    const element = document.getElementById(id);
-                    if (element) {
-                        element.textContent = value;
-                    }
-                });
-
-                // Автоматический доход
-                const autoIncome = this.gameData.upgrades.asic.level * 1 + this.gameData.upgrades.farm.level * 5;
-                const autoIncomeElement = document.getElementById('autoIncome');
-                if (autoIncomeElement) {
-                    autoIncomeElement.textContent = autoIncome.toFixed(1);
-                }
-            }
-
-            updateEnergy() {
-                const energyElement = document.getElementById('energy');
-                if (energyElement && this.gameData) {
-                    energyElement.textContent = Math.floor(this.gameData.energy);
-                }
-            }
-
-            updateLevel() {
-                // Можно добавить логику прогресса уровня
-            }
-
-            updateUpgrades() {
-                if (!this.gameData) return;
-
-                // Обновление информации об улучшениях
-                Object.entries(this.gameData.upgrades).forEach(([type, upgrade]) => {
-                    const levelElement = document.getElementById(`upgrade${type.charAt(0).toUpperCase() + type.slice(1)}Level`);
-                    const costElement = document.getElementById(`upgrade${type.charAt(0).toUpperCase() + type.slice(1)}Cost`);
-                    const buttonElement = document.getElementById(`upgrade${type.charAt(0).toUpperCase() + type.slice(1)}Btn`);
-
-                    if (levelElement) levelElement.textContent = upgrade.level;
-                    if (costElement) costElement.textContent = upgrade.cost;
-                    if (buttonElement) {
-                        buttonElement.disabled = this.gameData.balance < upgrade.cost;
-                    }
-                });
-            }
-
-            updateBadges() {
-                this.updateUpgradeBadges();
-            }
-
-            updateUpgradeBadges() {
-                if (!this.gameData) return;
-
-                const canAffordUpgrade = Object.values(this.gameData.upgrades).some(upgrade => 
-                    this.gameData.balance >= upgrade.cost
-                );
-                
-                const badge = document.getElementById('upgradeBadge');
-                if (badge) {
-                    badge.style.display = canAffordUpgrade ? 'block' : 'none';
-                    badge.textContent = '!';
-                }
-            }
-
-            showPremiumOffer() {
-                if (!this.tg?.showPopup) return;
-
-                this.tg.showPopup({
-                    title: '💎 ПРЕМИУМ ДОСТУП',
-                    message: 'Разблокируйте эксклюзивные возможности:',
-                    buttons: [
-                        {
-                            id: 'premium_month',
-                            type: 'default',
-                            text: '💰 Месяц - 299 ₽'
-                        },
-                        {
-                            id: 'premium_year', 
-                            type: 'default',
-                            text: '💎 Год - 2,990 ₽'
-                        },
-                        { type: 'cancel' }
-                    ]
-                }, (buttonId) => {
-                    if (buttonId !== 'cancel') {
-                        this.processPremiumPurchase(buttonId);
-                    }
-                });
-            }
-
-            processPremiumPurchase(planId) {
-                this.showNotification('💳 Система платежей в разработке');
-            }
-
-            checkAchievements() {
-                // Базовая проверка достижений
-                if (this.gameData.totalMined >= 1000 && !this.gameData.achievements) {
-                    this.unlockAchievement('first_thousand');
-                }
-            }
-
-            unlockAchievement(achievementId) {
-                if (!this.gameData.achievements) {
-                    this.gameData.achievements = [];
-                }
-
-                if (!this.gameData.achievements.includes(achievementId)) {
-                    this.gameData.achievements.push(achievementId);
-                    this.showAchievementPopup(achievementId);
-                }
-            }
-
-            showAchievementPopup(achievementId) {
-                const achievements = {
-                    'first_thousand': { title: '🎯 Первая тысяча', description: 'Добудьте 1000 BTC', reward: 500 }
-                };
-
-                const achievement = achievements[achievementId];
-                if (achievement) {
-                    const popup = document.createElement('div');
-                    popup.className = 'achievement-popup';
-                    popup.innerHTML = `
-                        <div style="font-size: 3rem; margin-bottom: 15px;">🏆</div>
-                        <div style="font-size: 1.3rem; font-weight: 900; margin-bottom: 10px;">${achievement.title}</div>
-                        <div style="font-size: 1rem; opacity: 0.9;">${achievement.description}</div>
-                        <div style="margin-top: 20px; font-size: 0.9rem; color: var(--accent);">
-                            +${achievement.reward} BTC награда!
-                        </div>
-                    `;
-                    
-                    document.body.appendChild(popup);
-                    this.gameData.balance += achievement.reward;
-                    
-                    setTimeout(() => {
-                        popup.style.opacity = '0';
-                        setTimeout(() => {
-                            if (popup.parentNode) {
-                                popup.parentNode.removeChild(popup);
-                            }
-                        }, 500);
-                    }, 4000);
-                }
+                showNotification('✅ Улучшение куплено!');
+                updateDisplay();
+                saveGame();
+            } else {
+                showNotification('❌ Недостаточно BTC!');
             }
         }
 
-        // Глобальные функции
+        // Автоматический майнинг
+        function autoMine() {
+            const now = Date.now();
+            const timePassed = (now - gameData.lastUpdate) / 1000;
+            
+            if (timePassed > 0) {
+                const autoIncome = gameData.upgrades.asic.level * 1;
+                const mined = autoIncome * timePassed;
+                gameData.balance += mined;
+                gameData.totalMined += mined;
+                gameData.lastUpdate = now;
+                
+                updateDisplay();
+            }
+        }
+
+        // Восстановление энергии
+        function regenEnergy() {
+            if (gameData.energy < gameData.maxEnergy) {
+                gameData.energy += 0.5;
+                updateDisplay();
+            }
+        }
+
+        // Обновление статистики времени
+        function updatePlayTime() {
+            gameData.statistics.playTime++;
+            document.getElementById('statTime').textContent = formatTime(gameData.statistics.playTime);
+        }
+
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+        }
+
+        // Обновление интерфейса
+        function updateDisplay() {
+            // Основные показатели
+            document.getElementById('balance').textContent = gameData.balance.toFixed(1);
+            document.getElementById('hashrate').textContent = gameData.hashrate.toFixed(1);
+            document.getElementById('level').textContent = gameData.level;
+            document.getElementById('totalMined').textContent = gameData.totalMined.toFixed(1);
+            document.getElementById('energy').textContent = Math.floor(gameData.energy);
+
+            // Статистика
+            document.getElementById('statClicks').textContent = gameData.statistics.clicks;
+            document.getElementById('statBoosters').textContent = gameData.statistics.boostersUsed;
+
+            // Обновление стоимости улучшений
+            document.getElementById('upgradePcCost').textContent = gameData.upgrades.pc.cost + ' BTC';
+            document.getElementById('upgradeGpuCost').textContent = gameData.upgrades.gpu.cost + ' BTC';
+            document.getElementById('upgradeAsicCost').textContent = gameData.upgrades.asic.cost + ' BTC';
+
+            // Кнопки улучшений
+            document.getElementById('upgradePcBtn').disabled = gameData.balance < gameData.upgrades.pc.cost;
+            document.getElementById('upgradeGpuBtn').disabled = gameData.balance < gameData.upgrades.gpu.cost;
+            document.getElementById('upgradeAsicBtn').disabled = gameData.balance < gameData.upgrades.asic.cost;
+
+            // Проверка уровня
+            checkLevelUp();
+        }
+
+        // Проверка повышения уровня
+        function checkLevelUp() {
+            const newLevel = Math.floor(gameData.totalMined / 100) + 1;
+            if (newLevel > gameData.level) {
+                gameData.level = newLevel;
+                gameData.hashrate += 0.5;
+                showNotification(`🎉 Уровень ${newLevel}! +0.5 H/s`);
+            }
+        }
+
+        // Анимация клика
+        function createClickAnimation(amount) {
+            const animation = document.createElement('div');
+            animation.style.position = 'fixed';
+            animation.style.left = (Math.random() * 200 + 100) + 'px';
+            animation.style.top = (Math.random() * 100 + 200) + 'px';
+            animation.style.color = '#e91e63';
+            animation.style.fontWeight = 'bold';
+            animation.style.fontSize = '20px';
+            animation.style.pointerEvents = 'none';
+            animation.style.zIndex = '1000';
+            animation.textContent = '+' + amount.toFixed(1);
+            animation.style.animation = 'floatUp 1s ease-out forwards';
+            
+            // Добавляем CSS анимацию
+            if (!document.querySelector('#clickAnimationStyle')) {
+                const style = document.createElement('style');
+                style.id = 'clickAnimationStyle';
+                style.textContent = `
+                    @keyframes floatUp {
+                        0% { transform: translateY(0); opacity: 1; }
+                        100% { transform: translateY(-50px); opacity: 0; }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+            
+            document.body.appendChild(animation);
+            setTimeout(() => animation.remove(), 1000);
+        }
+
+        // Уведомления
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.opacity = '0';
+                setTimeout(() => notification.remove(), 500);
+            }, 2000);
+        }
+
+        // Переключение вкладок
         function switchTab(tabName) {
             // Скрыть все вкладки
             document.querySelectorAll('.tab-content').forEach(tab => {
                 tab.classList.remove('active');
             });
             
-            // Показать выбранную вкладку
-            const targetTab = document.getElementById(tabName);
-            if (targetTab) {
-                targetTab.classList.add('active');
-            }
-            
-            // Обновить активные кнопки
-            document.querySelectorAll('.tab-button, .nav-button').forEach(btn => {
-                btn.classList.remove('active');
+            // Скрыть все кнопки вкладок
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
             });
             
-            // Найти кнопку, которая вызвала переключение
-            let sourceButton = event.target;
-            while (sourceButton && !sourceButton.classList.contains('tab-button') && !sourceButton.classList.contains('nav-button')) {
-                sourceButton = sourceButton.parentElement;
-            }
+            // Показать выбранную вкладку
+            document.getElementById(tabName).classList.add('active');
             
-            if (sourceButton) {
-                sourceButton.classList.add('active');
-            }
+            // Активировать кнопку
+            event.target.classList.add('active');
         }
 
-        function mine() {
-            if (window.minerApp) {
-                window.minerApp.mine();
-            }
+        // Инициализация игры
+        function initGame() {
+            loadGame();
+            
+            // Назначение обработчиков событий
+            document.getElementById('mineButton').addEventListener('click', mine);
+            
+            // Запуск игровых циклов
+            setInterval(autoMine, 1000);
+            setInterval(regenEnergy, 2000);
+            setInterval(updatePlayTime, 1000);
+            setInterval(saveGame, 30000);
+            
+            console.log('🚀 Игра запущена!');
         }
 
-        function buyUpgrade(type) {
-            if (window.minerApp) {
-                window.minerApp.buyUpgrade(type);
-            }
-        }
+        // Запуск при загрузке страницы
+        window.addEventListener('load', initGame);
 
-        // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', () => {
-            window.minerApp = new CryptoMinerMAX();
-        });
-
-        // Обработка ошибок
-        window.addEventListener('error', (e) => {
-            console.error('Global error:', e.error);
-        });
+        // Сохранение при закрытии
+        window.addEventListener('beforeunload', saveGame);
     </script>
 </body>
 </html>
