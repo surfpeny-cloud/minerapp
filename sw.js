@@ -1,18 +1,17 @@
-const CACHE_NAME = 'crypto-miner-max-v3';
+const CACHE_NAME = 'crypto-miner-max-v1';
 const urlsToCache = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/icons/icon-192.png',
-  '/icons/icon-512.png'
+  './',
+  './index.html'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then((cache) => {
-        console.log('Opened cache');
         return cache.addAll(urlsToCache);
+      })
+      .catch((error) => {
+        console.log('Cache installation failed:', error);
       })
   );
 });
@@ -25,8 +24,10 @@ self.addEventListener('fetch', (event) => {
           return response;
         }
         return fetch(event.request);
-      }
-    )
+      })
+      .catch((error) => {
+        console.log('Fetch failed:', error);
+      })
   );
 });
 
@@ -36,7 +37,6 @@ self.addEventListener('activate', (event) => {
       return Promise.all(
         cacheNames.map((cacheName) => {
           if (cacheName !== CACHE_NAME) {
-            console.log('Deleting old cache:', cacheName);
             return caches.delete(cacheName);
           }
         })
