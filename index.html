@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Crypto Miner Pro</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --accent: #e91e63;
+            --success: #4CAF50;
+            --warning: #FF9800;
+            --background: #f5f6fa;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            color: white;
+            background: rgba(255,255,255,0.1);
+            padding: 15px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .online-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(76, 175, 80, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        .online-dot {
+            width: 8px;
+            height: 8px;
+            background: #4CAF50;
+            border-radius: 50%;
+            margin-right: 5px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .balance-section {
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .balance-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .balance-amount {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+            margin: 10px 0;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin: 15px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 12px;
+            background: var(--background);
+            border-radius: 15px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #666;
+            margin-top: 4px;
+        }
+
+        .mine-section {
+            text-align: center;
+            position: relative;
+        }
+
+        .mine-button {
+            width: 140px;
+            height: 140px;
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: none;
+            border-radius: 50%;
+            margin: 20px auto;
+            display: block;
+            cursor: pointer;
+            font-size: 56px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 165, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .mine-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .mine-button:hover::before {
+            transform: translateX(100%) translateY(100%);
+        }
+
+        .mine-button:active {
+            transform: scale(0.9);
+            box-shadow: 0 5px 20px rgba(255, 165, 0, 0.6);
+        }
+
+        .boost-indicator {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--accent);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .upgrade-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px;
+            background: var(--background);
+            border-radius: 15px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--success);
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-item:hover {
+            transform: translateX(5px);
+        }
+
+        .upgrade-info {
+            flex: 1;
+        }
+
+        .upgrade-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .upgrade-name {
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        .upgrade-level {
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 10px;
+        }
+
+        .upgrade-description {
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .upgrade-cost {
+            font-size: 13px;
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .upgrade-button {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .upgrade-button:hover:not(:disabled) {
+            background: #45a049;
+            transform: scale(1.05);
+        }
+
+        .upgrade-button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .tab-navigation {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+            background: white;
+            border-radius: 20px;
+            padding: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .tab-button .tab-badge {
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .click-animation {
+            position: fixed;
+            pointer-events: none;
+            font-weight: bold;
+            font-size: 20px;
+            color: var(--accent);
+            animation: floatUp 1s ease-out forwards;
+            z-index: 1000;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-80px) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 15px;
+            z-index: 1000;
+            animation: slideDown 0.3s ease-out;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .achievement-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            border-radius: 20px;
+            z-index: 1001;
+            text-align: center;
+            animation: achievementPop 0.5s ease-out;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        @keyframes achievementPop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            70% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #e0e0e0;
+            border-radius: 3px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.5s ease;
+        }
+
+        .energy-bar {
+            display: flex;
+            align-items: center;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 15px;
+            margin: 10px 0;
+            color: white;
+        }
+
+        .energy-fill {
+            flex: 1;
+            height: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0 10px;
+        }
+
+        .energy-current {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            transition: width 0.5s ease;
+        }
+
+        .quest-item {
+            background: var(--background);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--warning);
+        }
+
+        .quest-reward {
+            background: var(--warning);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-top: 5px;
+            display: inline-block;
+        }
+
+        .crypto-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            background: var(--background);
+            border-radius: 10px;
+            margin: 5px 0;
+        }
+
+        .price-change.positive {
+            color: #4CAF50;
+        }
+
+        .price-change.negative {
+            color: #f44336;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Crypto Miner Pro</h1>
+            <p>Профессиональный майнинг в Telegram!</p>
+            <div class="online-indicator">
+                <div class="online-dot"></div>
+                <span>Онлайн: <span id="onlineCount">1,247</span></span>
+            </div>
+        </div>
+
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="switchTab('mine')">
+                ⛏️ Майнинг
+                <span class="tab-badge" id="mineBadge" style="display: none;">!</span>
+            </button>
+            <button class="tab-button" onclick="switchTab('upgrades')">
+                🔧 Улучшения
+                <span class="tab-badge" id="upgradeBadge" style="display: none;"></span>
+            </button>
+            <button class="tab-button" onclick="switchTab('quests')">
+                🎯 Квесты
+                <span class="tab-badge" id="questBadge" style="display: none;"></span>
+            </button>
+            <button class="tab-button" onclick="switchTab('market')">
+                📈 Рынок
+                <span class="tab-badge" id="marketBadge" style="display: none;"></span>
+            </button>
+        </div>
+
+        <!-- Вкладка Майнинг -->
+        <div id="mine" class="tab-content active">
+            <div class="card balance-section">
+                <div>Ваш баланс</div>
+                <div class="balance-amount" id="balance">0</div>
+                <div>BTC ($<span id="balanceUsd">0</span>)</div>
+            </div>
+
+            <div class="energy-bar">
+                <span>⚡</span>
+                <div class="energy-fill">
+                    <div class="energy-current" id="energyFill" style="width: 100%;"></div>
+                </div>
+                <span id="energyText">100/100</span>
+            </div>
+
+            <div class="card mine-section">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="hashrate">1</div>
+                        <div class="stat-label">Хешрейт</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="level">1</div>
+                        <div class="stat-label">Уровень</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalMined">0</div>
+                        <div class="stat-label">Всего добыто</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="autoIncome">0</div>
+                        <div class="stat-label">Авто/сек</div>
+                    </div>
+                </div>
+
+                <button class="mine-button" id="mineButton" onclick="mine()">
+                    ⛏️
+                </button>
+                <div class="boost-indicator" id="boostIndicator" style="display: none;">
+                    BOOST x2!
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" id="levelProgress" style="width: 0%;"></div>
+                </div>
+                <div style="font-size: 12px; color: #666;">
+                    До следующего уровня: <span id="nextLevelProgress">0</span>/<span id="nextLevelTotal">1000</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка Улучшения -->
+        <div id="upgrades" class="tab-content">
+            <div class="card">
+                <h3>🔧 Система улучшений</h3>
+                
+                <div class="upgrade-item">
+                    <div class="upgrade-info">
+                        <div class="upgrade-header">
+                            <div class="upgrade-name">💻 Базовый ПК</div>
+                            <div class="upgrade-level" id="upgradePcLevel">Ур. 0</div>
+                        </div>
+                        <div class="upgrade-description">+0.5 H/s к ручному майнингу</div>
+                        <div class="upgrade-cost" id="upgradePcCost">50 BTC</div>
+                    </div>
+                    <button class="upgrade-button" onclick="buyUpgrade('pc')" id="upgradePcBtn">
+                        Купить
+                    </button>
+                </div>
+
+                <div class="upgrade-item">
+                    <div class="upgrade-info">
+                        <div class="upgrade-header">
+                            <div class="upgrade-name">🎮 Игровая видеокарта</div>
+                            <div class="upgrade-level" id="upgradeGpuLevel">Ур. 0</div>
+                        </div>
+                        <div class="upgrade-description">+2 H/s к ручному майнингу</div>
+                        <div class="upgrade-cost" id="upgradeGpuCost">200 BTC</div>
+                    </div>
+                    <button class="upgrade-button" onclick="buyUpgrade('gpu')" id="upgradeGpuBtn">
+                        Купить
+                    </button>
+                </div>
+
+                <div class="upgrade-item">
+                    <div class="upgrade-info">
+                        <div class="upgrade-header">
+                            <div class="upgrade-name">💠 ASIC майнер</div>
+                            <div class="upgrade-level" id="upgradeAsicLevel">Ур. 0</div>
+                        </div>
+                        <div class="upgrade-description">+1 BTC/сек автоматически</div>
+                        <div class="upgrade-cost" id="upgradeAsicCost">500 BTC</div>
+                    </div>
+                    <button class="upgrade-button" onclick="buyUpgrade('asic')" id="upgradeAsicBtn">
+                        Купить
+                    </button>
+                </div>
+
+                <div class="upgrade-item">
+                    <div class="upgrade-info">
+                        <div class="upgrade-header">
+                            <div class="upgrade-name">🏭 Майнинг ферма</div>
+                            <div class="upgrade-level" id="upgradeFarmLevel">Ур. 0</div>
+                        </div>
+                        <div class="upgrade-description">+5 BTC/сек автоматически</div>
+                        <div class="upgrade-cost" id="upgradeFarmCost">2000 BTC</div>
+                    </div>
+                    <button class="upgrade-button" onclick="buyUpgrade('farm')" id="upgradeFarmBtn">
+                        Купить
+                    </button>
+                </div>
+
+                <div class="upgrade-item">
+                    <div class="upgrade-info">
+                        <div class="upgrade-header">
+                            <div class="upgrade-name">⚡ Буст энергии</div>
+                            <div class="upgrade-level" id="upgradeEnergyLevel">Ур. 0</div>
+                        </div>
+                        <div class="upgrade-description">+20 к максимальной энергии</div>
+                        <div class="upgrade-cost" id="upgradeEnergyCost">1000 BTC</div>
+                    </div>
+                    <button class="upgrade-button" onclick="buyUpgrade('energy')" id="upgradeEnergyBtn">
+                        Купить
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка Квесты -->
+        <div id="quests" class="tab-content">
+            <div class="card">
+                <h3>🎯 Ежедневные квесты</h3>
+                
+                <div class="quest-item">
+                    <div style="font-weight: bold;">⛏️ Добытчик новичок</div>
+                    <div style="font-size: 12px; color: #666; margin: 5px 0;">
+                        Добудьте 100 BTC за сегодня
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quest1Progress" style="width: 0%;"></div>
+                    </div>
+                    <div class="quest-reward" onclick="claimQuest(1)">Забрать: 50 BTC</div>
+                </div>
+
+                <div class="quest-item">
+                    <div style="font-weight: bold;">🔧 Улучшатель</div>
+                    <div style="font-size: 12px; color: #666; margin: 5px 0;">
+                        Купите 3 улучшения за сегодня
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quest2Progress" style="width: 0%;"></div>
+                    </div>
+                    <div class="quest-reward" onclick="claimQuest(2)">Забрать: 100 BTC</div>
+                </div>
+
+                <div class="quest-item">
+                    <div style="font-weight: bold;">🏆 Мастер майнинга</div>
+                    <div style="font-size: 12px; color: #666; margin: 5px 0;">
+                        Добудьте 500 BTC за один день
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="quest3Progress" style="width: 0%;"></div>
+                    </div>
+                    <div class="quest-reward" onclick="claimQuest(3)">Забрать: 250 BTC</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>🏅 Достижения</h3>
+                <div id="achievementsList">
+                    <!-- Достижения будут добавляться через JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладка Рынок -->
+        <div id="market" class="tab-content">
+            <div class="card">
+                <h3>📈 Курсы криптовалют</h3>
+                
+                <div class="crypto-price">
+                    <div>
+                        <strong>BTC</strong>
+                        <div style="font-size: 12px; color: #666;">Биткоин</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong id="btcPrice">$45,231.50</strong>
+                        <div class="price-change positive" id="btcChange">+2.34%</div>
+                    </div>
+                </div>
+
+                <div class="crypto-price">
+                    <div>
+                        <strong>ETH</strong>
+                        <div style="font-size: 12px; color: #666;">Эфириум</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong id="ethPrice">$3,245.67</strong>
+                        <div class="price-change positive" id="ethChange">+1.89%</div>
+                    </div>
+                </div>
+
+                <div class="crypto-price">
+                    <div>
+                        <strong>DOGE</strong>
+                        <div style="font-size: 12px; color: #666;">Догекойн</div>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong id="dogePrice">$0.1245</strong>
+                        <div class="price-change negative" id="dogeChange">-0.56%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>💱 Обмен валют</h3>
+                <div style="text-align: center; margin: 20px 0;">
+                    <div style="font-size: 14px; color: #666; margin-bottom: 10px;">
+                        Текущий курс: 1 BTC = $<span id="exchangeRate">45,231.50</span>
+                    </div>
+                    <button class="upgrade-button" onclick="showExchangeModal()" style="width: 100%;">
+                        Обменять BTC на бонусы
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Расширенная инициализация Telegram Web App
+        let tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.enableClosingConfirmation();
+        tg.setHeaderColor('#667eea');
+        tg.setBackgroundColor('#667eea');
+
+        // Расширенные данные игры
+        let gameData = {
+            balance: 100, // Стартовый баланс
+            hashrate: 1,
+            level: 1,
+            totalMined: 0,
+            energy: 100,
+            maxEnergy: 100,
+            lastEnergyUpdate: Date.now(),
+            upgrades: {
+                pc: { level: 0, cost: 50 },
+                gpu: { level: 0, cost: 200 },
+                asic: { level: 0, cost: 500 },
+                farm: { level: 0, cost: 2000 },
+                energy: { level: 0, cost: 1000 }
+            },
+            achievements: {
+                firstMine: false,
+                firstUpgrade: false,
+                level5: false,
+                rich: false
+            },
+            quests: {
+                dailyMined: 0,
+                dailyUpgrades: 0,
+                completed: [false, false, false]
+            },
+            lastUpdate: Date.now(),
+            userId: tg.initDataUnsafe.user?.id || 'anonymous',
+            username: tg.initDataUnsafe.user?.username || 'Игрок',
+            boost: {
+                active: false,
+                endTime: 0,
+                multiplier: 2
+            }
+        };
+
+        // Загрузка данных
+        function loadGameData() {
+            const saved = localStorage.getItem('cryptoMinerProData');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    // Проверяем, что данные от того же пользователя
+                    if (parsed.userId === gameData.userId) {
+                        // Миграция старых данных
+                        gameData = { ...gameData, ...parsed };
+                        // Обновляем недостающие поля
+                        if (!gameData.energy) gameData.energy = 100;
+                        if (!gameData.maxEnergy) gameData.maxEnergy = 100;
+                        if (!gameData.quests) gameData.quests = { dailyMined: 0, dailyUpgrades: 0, completed: [false, false, false] };
+                        if (!gameData.boost) gameData.boost = { active: false, endTime: 0, multiplier: 2 };
+                    }
+                } catch (e) {
+                    console.error('Ошибка загрузки данных:', e);
+                }
+            }
+            updateDisplay();
+            startGameLoop();
+        }
+
+        // Основной игровой цикл
+        function startGameLoop() {
+            // Авто-майнинг каждую секунду
+            setInterval(autoMine, 1000);
+            
+            // Восстановление энергии каждые 2 секунды
+            setInterval(updateEnergy, 2000);
+            
+            // Автосохранение каждые 30 секунд
+            setInterval(saveGameData, 30000);
+            
+            // Обновление курсов каждые 10 секунд
+            setInterval(updateCryptoPrices, 10000);
+            
+            // Проверка бустов каждую секунду
+            setInterval(checkBoost, 1000);
+        }
+
+        // Майнинг с улучшенной логикой
+        function mine() {
+            if (gameData.energy <= 0) {
+                showNotification('⚠️ Недостаточно энергии!');
+                return;
+            }
+
+            let mined = gameData.hashrate;
+            
+            // Применяем буст если активен
+            if (gameData.boost.active) {
+                mined *= gameData.boost.multiplier;
+            }
+
+            // Шанс критического удара (5%)
+            if (Math.random() < 0.05) {
+                mined *= 3;
+                showNotification('💥 Критический удар! x3 добыча!');
+            }
+
+            gameData.balance += mined;
+            gameData.totalMined += mined;
+            gameData.quests.dailyMined += mined;
+            gameData.energy -= 2;
+
+            createClickAnimation(mined);
+            checkAchievements();
+            updateQuests();
+            updateDisplay();
+            saveGameData();
+
+            // Вибрация на мобильных
+            if (navigator.vibrate) {
+                navigator.vibrate(30);
+            }
+        }
+
+        // Автоматический майнинг
+        function autoMine() {
+            const now = Date.now();
+            const timePassed = (now - gameData.lastUpdate) / 1000;
+            
+            if (timePassed > 0) {
+                const autoIncome = 
+                    gameData.upgrades.asic.level * 1 + 
+                    gameData.upgrades.farm.level * 5;
+                
+                const mined = autoIncome * timePassed;
+                gameData.balance += mined;
+                gameData.totalMined += mined;
+                gameData.quests.dailyMined += mined;
+                gameData.lastUpdate = now;
+                
+                updateDisplay();
+                checkAchievements();
+                updateQuests();
+            }
+        }
+
+        // Восстановление энергии
+        function updateEnergy() {
+            if (gameData.energy < gameData.maxEnergy) {
+                gameData.energy += 1;
+                updateDisplay();
+            }
+        }
+
+        // Покупка улучшений с расширенной логикой
+        function buyUpgrade(type) {
+            const upgrade = gameData.upgrades[type];
+            
+            if (gameData.balance >= upgrade.cost) {
+                gameData.balance -= upgrade.cost;
+                upgrade.level++;
+                gameData.quests.dailyUpgrades++;
+                
+                // Увеличиваем стоимость для следующего уровня
+                upgrade.cost = Math.floor(upgrade.cost * (1.5 + upgrade.level * 0.1));
+                
+                // Применяем эффекты улучшений
+                switch(type) {
+                    case 'pc':
+                        gameData.hashrate += 0.5;
+                        break;
+                    case 'gpu':
+                        gameData.hashrate += 2;
+                        break;
+                    case 'energy':
+                        gameData.maxEnergy += 20;
+                        gameData.energy += 20;
+                        break;
+                }
+                
+                showNotification('✅ Улучшение куплено!');
+                checkAchievements();
+                updateQuests();
+                updateDisplay();
+                saveGameData();
+            } else {
+                showNotification('❌ Недостаточно BTC!');
+            }
+        }
+
+        // Проверка и выдача достижений
+        function checkAchievements() {
+            const ach = gameData.achievements;
+            
+            if (!ach.firstMine && gameData.totalMined >= 10) {
+                ach.firstMine = true;
+                showAchievement('⛏️ Первая добыча', '+50 BTC бонус!');
+                gameData.balance += 50;
+            }
+            
+            if (!ach.firstUpgrade && Object.values(gameData.upgrades).some(u => u.level > 0)) {
+                ach.firstUpgrade = true;
+                showAchievement('🔧 Первое улучшение', '+100 BTC бонус!');
+                gameData.balance += 100;
+            }
+            
+            if (!ach.level5 && gameData.level >= 5) {
+                ach.level5 = true;
+                showAchievement('🏆 5 уровень', 'Хешрейт удвоен!');
+                gameData.hashrate *= 2;
+            }
+            
+            if (!ach.rich && gameData.balance >= 10000) {
+                ach.rich = true;
+                showAchievement('💰 Богач', '+1000 BTC бонус!');
+                gameData.balance += 1000;
+            }
+        }
+
+        // Обновление квестов
+        function updateQuests() {
+            // Обновляем прогресс квестов
+            updateQuestProgress(1, gameData.quests.dailyMined, 100);
+            updateQuestProgress(2, gameData.quests.dailyUpgrades, 3);
+            updateQuestProgress(3, gameData.quests.dailyMined, 500);
+            
+            updateDisplay();
+        }
+
+        function updateQuestProgress(questId, current, target) {
+            const progress = Math.min((current / target) * 100, 100);
+            document.getElementById(`quest${questId}Progress`).style.width = progress + '%';
+        }
+
+        function claimQuest(questId) {
+            if (!gameData.quests.completed[questId - 1]) {
+                const rewards = [50, 100, 250];
+                gameData.balance += rewards[questId - 1];
+                gameData.quests.completed[questId - 1] = true;
+                showNotification(`🎉 Квест выполнен! +${rewards[questId - 1]} BTC`);
+                updateDisplay();
+                saveGameData();
+            }
+        }
+
+        // Обновление курсов криптовалют (заглушка с рандомом)
+        function updateCryptoPrices() {
+            const btcPrice = 45231.50 + (Math.random() - 0.5) * 1000;
+            const ethPrice = 3245.67 + (Math.random() - 0.5) * 100;
+            const dogePrice = 0.1245 + (Math.random() - 0.5) * 0.01;
+            
+            document.getElementById('btcPrice').textContent = `$${btcPrice.toFixed(2)}`;
+            document.getElementById('ethPrice').textContent = `$${ethPrice.toFixed(2)}`;
+            document.getElementById('dogePrice').textContent = `$${dogePrice.toFixed(4)}`;
+            
+            // Обновляем курс для обмена
+            document.getElementById('exchangeRate').textContent = btcPrice.toFixed(2);
+        }
+
+        // Активация буста
+        function activateBoost() {
+            gameData.boost.active = true;
+            gameData.boost.endTime = Date.now() + 30000; // 30 секунд
+            showNotification('⚡ Буст активирован! x2 к добыче на 30 секунд!');
+            updateDisplay();
+        }
+
+        function checkBoost() {
+            if (gameData.boost.active && Date.now() > gameData.boost.endTime) {
+                gameData.boost.active = false;
+                showNotification('⚡ Буст завершился');
+                updateDisplay();
+            }
+        }
+
+        // Обновление интерфейса
+        function updateDisplay() {
+            // Основные показатели
+            document.getElementById('balance').textContent = gameData.balance.toFixed(2);
+            document.getElementById('hashrate').textContent = gameData.hashrate.toFixed(1);
+            document.getElementById('level').textContent = gameData.level;
+            document.getElementById('totalMined').textContent = gameData.totalMined.toFixed(2);
+            
+            // Энергия
+            const energyPercent = (gameData.energy / gameData.maxEnergy) * 100;
+            document.getElementById('energyFill').style.width = energyPercent + '%';
+            document.getElementById('energyText').textContent = `${Math.floor(gameData.energy)}/${gameData.maxEnergy}`;
+            
+            // Прогресс уровня
+            const nextLevelTotal = gameData.level * 1000;
+            const levelProgress = Math.min((gameData.totalMined / nextLevelTotal) * 100, 100);
+            document.getElementById('levelProgress').style.width = levelProgress + '%';
+            document.getElementById('nextLevelProgress').textContent = Math.floor(gameData.totalMined);
+            document.getElementById('nextLevelTotal').textContent = nextLevelTotal;
+            
+            // Автоматический доход
+            const autoIncome = gameData.upgrades.asic.level * 1 + gameData.upgrades.farm.level * 5;
+            document.getElementById('autoIncome').textContent = autoIncome.toFixed(1);
+            
+            // Обновление стоимости улучшений
+            Object.keys(gameData.upgrades).forEach(upgrade => {
+                document.getElementById(`upgrade${upgrade.charAt(0).toUpperCase() + upgrade.slice(1)}Cost`).textContent = 
+                    gameData.upgrades[upgrade].cost + ' BTC';
+                document.getElementById(`upgrade${upgrade.charAt(0).toUpperCase() + upgrade.slice(1)}Level`).textContent = 
+                    `Ур. ${gameData.upgrades[upgrade].level}`;
+            });
+            
+            // Кнопки улучшений
+            Object.keys(gameData.upgrades).forEach(upgrade => {
+                document.getElementById(`upgrade${upgrade.charAt(0).toUpperCase() + upgrade.slice(1)}Btn`).disabled = 
+                    gameData.balance < gameData.upgrades[upgrade].cost;
+            });
+            
+            // Буст
+            document.getElementById('boostIndicator').style.display = 
+                gameData.boost.active ? 'block' : 'none';
+            
+            // Баджы на вкладках
+            updateTabBadges();
+            
+            // Проверка уровня
+            checkLevelUp();
+        }
+
+        function updateTabBadges() {
+            // Бадж для улучшений (если можно купить)
+            const canBuyUpgrade = Object.values(gameData.upgrades).some(upgrade => 
+                gameData.balance >= upgrade.cost
+            );
+            document.getElementById('upgradeBadge').style.display = canBuyUpgrade ? 'block' : 'none';
+            
+            // Бадж для квестов (если есть выполненные)
+            const hasCompletedQuest = gameData.quests.completed.some(completed => completed);
+            document.getElementById('questBadge').style.display = hasCompletedQuest ? 'block' : 'none';
+        }
+
+        function checkLevelUp() {
+            const newLevel = Math.floor(gameData.totalMined / 1000) + 1;
+            if (newLevel > gameData.level) {
+                const oldLevel = gameData.level;
+                gameData.level = newLevel;
+                gameData.hashrate += 1; // Бонус за уровень
+                showNotification(`🎉 Уровень ${newLevel}! +1 H/s и +10 энергии!`);
+                gameData.maxEnergy += 10;
+                gameData.energy += 10;
+                
+                // Специальный бонус каждые 5 уровней
+                if (newLevel % 5 === 0) {
+                    showAchievement(`🌟 Уровень ${newLevel}!`, 'Активирован буст на 30 секунд!');
+                    activateBoost();
+                }
+            }
+        }
+
+        // Анимация клика
+        function createClickAnimation(amount) {
+            const animation = document.createElement('div');
+            animation.className = 'click-animation';
+            animation.textContent = '+' + amount.toFixed(1);
+            animation.style.left = Math.random() * 300 + 50 + 'px';
+            animation.style.top = '50%';
+            
+            document.body.appendChild(animation);
+            
+            setTimeout(() => {
+                animation.remove();
+            }, 1000);
+        }
+
+        // Вспомогательные функции
+        function showNotification(message) {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        function showAchievement(title, description) {
+            const popup = document.createElement('div');
+            popup.className = 'achievement-popup';
+            popup.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 10px;">🏆</div>
+                <div style="font-weight: bold; margin-bottom: 5px;">${title}</div>
+                <div style="font-size: 14px;">${description}</div>
+            `;
+            
+            document.body.appendChild(popup);
+            
+            setTimeout(() => {
+                popup.remove();
+            }, 4000);
+        }
+
+        function switchTab(tabName) {
+            // Скрыть все вкладки
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Показать выбранную вкладку
+            document.getElementById(tabName).classList.add('active');
+            
+            // Обновить активные кнопки
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Обновить данные на вкладке
+            if (tabName === 'market') {
+                updateCryptoPrices();
+            }
+        }
+
+        function saveGameData() {
+            gameData.lastUpdate = Date.now();
+            localStorage.setItem('cryptoMinerProData', JSON.stringify(gameData));
+        }
+
+        function showExchangeModal() {
+            showNotification('💱 Функция обмена скоро будет доступна!');
+        }
+
+        // Инициализация при загрузке
+        window.addEventListener('load', function() {
+            loadGameData();
+            updateCryptoPrices();
+            
+            // Случайное количество онлайн игроков
+            setInterval(() => {
+                const online = 1247 + Math.floor(Math.random() * 50);
+                document.getElementById('onlineCount').textContent = online.toLocaleString();
+            }, 5000);
+            
+            // Случайный буст каждые 2-5 минут
+            setInterval(() => {
+                if (!gameData.boost.active && Math.random() < 0.3) {
+                    activateBoost();
+                }
+            }, 120000 + Math.random() * 180000);
+        });
+
+        // Обработка закрытия
+        tg.onEvent('viewportChanged', saveGameData);
+        window.addEventListener('beforeunload', saveGameData);
+    </script>
+</body>
+</html>
