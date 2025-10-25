@@ -1,22 +1,39 @@
 {
-  "name": "Crypto Miner Pro",
-  "short_name": "CryptoMiner",
-  "description": "Профессиональный майнинг криптовалюты в Telegram",
+  "name": "Crypto Miner MAX",
+  "short_name": "CryptoMinerMAX",
+  "description": "Продвинутый майнинг криптовалюты с полной интеграцией Telegram",
   "start_url": "/",
   "display": "standalone",
-  "theme_color": "#667eea",
-  "background_color": "#667eea",
+  "theme_color": "#00ff88",
+  "background_color": "#0f0f23",
+  "orientation": "portrait",
+  "categories": ["finance", "games", "entertainment"],
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "icons/icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "icon-512.png",
+      "src": "icons/icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ],
-  "categories": ["finance", "games"]
+  "screenshots": [
+    {
+      "src": "screenshots/mobile-1.png",
+      "sizes": "375x812",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "screenshots/desktop-1.png", 
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ]
 }
