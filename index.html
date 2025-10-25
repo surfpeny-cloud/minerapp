@@ -36,7 +36,6 @@
             min-height: 100vh;
             color: var(--tg-theme-text-color, #ffffff);
             overflow-x: hidden;
-            padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
         }
 
         .container {
@@ -230,11 +229,6 @@
             border-radius: 20px 20px 0 0;
         }
 
-        .stat-item:hover {
-            transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
         .mine-section {
             text-align: center;
             position: relative;
@@ -256,25 +250,9 @@
             overflow: hidden;
         }
 
-        .mine-button::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.6), transparent);
-            transform: rotate(45deg);
-            transition: all 0.6s ease;
-        }
-
         .mine-button:active {
             transform: scale(0.85);
             box-shadow: 0 10px 20px rgba(0, 255, 136, 0.6), 0 0 40px rgba(0, 255, 136, 0.4);
-        }
-
-        .mine-button:active::before {
-            transform: translateX(100%) translateY(100%) rotate(45deg);
         }
 
         .boost-indicator {
@@ -379,11 +357,6 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .upgrade-item:hover {
-            transform: translateX(10px);
-            background: rgba(255, 255, 255, 0.08);
-        }
-
         .upgrade-button {
             background: var(--tg-theme-button-color, var(--primary));
             color: var(--tg-theme-button-text-color, #000000);
@@ -450,6 +423,17 @@
             border: 1px solid rgba(255, 255, 255, 0.3);
         }
 
+        @keyframes slideDown {
+            from {
+                transform: translateX(-50%) translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
+        }
+
         .achievement-popup {
             position: fixed;
             top: 50%;
@@ -468,6 +452,12 @@
             max-width: 85%;
         }
 
+        @keyframes achievementPop {
+            0% { transform: translate(-50%, -50%) scale(0); }
+            70% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -483,8 +473,6 @@
             backdrop-filter: blur(30px);
             z-index: 1000;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            border-left: 1px solid rgba(255, 255, 255, 0.1);
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .nav-button {
@@ -537,6 +525,11 @@
             box-shadow: 0 0 20px rgba(0, 255, 136, 0.5);
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         .progress-ring {
             width: 80px;
             height: 80px;
@@ -549,12 +542,6 @@
             fill: transparent;
             transform: rotate(-90deg);
             transform-origin: 50% 50%;
-            animation: progress-pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes progress-pulse {
-            0%, 100% { stroke-dasharray: 0 220; }
-            50% { stroke-dasharray: 110 110; }
         }
 
         /* Адаптивность */
@@ -563,10 +550,6 @@
             .mine-button { width: 160px; height: 160px; font-size: 4rem; }
             .tab-button { padding: 15px 8px; font-size: 0.8rem; }
             .user-card { flex-direction: column; gap: 15px; }
-        }
-
-        @media (min-width: 768px) {
-            .container { max-width: 400px; }
         }
 
         /* Специальные эффекты */
@@ -599,6 +582,20 @@
             0% { transform: translate(0, 0); }
             100% { transform: translate(50px, 50px); }
         }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Анимация появления */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
@@ -606,17 +603,7 @@
     <div class="particles-container" id="particlesContainer"></div>
 
     <div class="loading-screen" id="loadingScreen">
-        <div class="progress-ring">
-            <svg class="progress-ring-circle" width="80" height="80">
-                <circle cx="40" cy="40" r="36" stroke="url(#gradient)"/>
-                <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" stop-color="#00ff88"/>
-                        <stop offset="100%" stop-color="#0099ff"/>
-                    </linearGradient>
-                </defs>
-            </svg>
-        </div>
+        <div class="loader"></div>
         <div style="margin-top: 20px; font-size: 1.1rem; font-weight: 700;">
             Инициализация майнера...
         </div>
@@ -666,28 +653,120 @@
                 <span>Бустеры</span>
                 <span class="tab-badge" id="boosterBadge" style="display: none;"></span>
             </button>
-            <button class="tab-button" onclick="switchTab('clan')">
-                <i class="fas fa-users"></i>
-                <span>Клан</span>
-                <span class="tab-badge" id="clanBadge" style="display: none;"></span>
+            <button class="tab-button" onclick="switchTab('profile')">
+                <i class="fas fa-user-cog"></i>
+                <span>Профиль</span>
+                <span class="tab-badge" id="profileBadge" style="display: none;"></span>
             </button>
         </div>
 
         <!-- Контент вкладок -->
         <div id="mine" class="tab-content active">
-            <!-- Основной контент майнинга -->
+            <div class="card balance-section">
+                <div style="font-size: 0.9rem; opacity: 0.9;">Ваш баланс</div>
+                <div class="balance-amount" id="balance">0</div>
+                <div style="font-size: 0.9rem; opacity: 0.9;">BTC</div>
+            </div>
+
+            <div class="card">
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="hashrate">1</div>
+                        <div class="stat-label">Хешрейт</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="energy">100</div>
+                        <div class="stat-label">Энергия</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="totalMined">0</div>
+                        <div class="stat-label">Всего добыто</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="autoIncome">0</div>
+                        <div class="stat-label">Авто/сек</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mine-section">
+                <button class="mine-button" id="mineButton">
+                    ⛏️
+                </button>
+                <div class="boost-indicator" id="boostIndicator" style="display: none;">
+                    BOOST x2!
+                </div>
+
+                <div style="text-align: center; margin-top: 20px;">
+                    <div style="font-size: 0.9rem; color: var(--tg-theme-hint-color, #666);">
+                        Нажимайте для майнинга!
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div id="upgrades" class="tab-content">
-            <!-- Контент улучшений -->
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px;">🔧 Система улучшений</h3>
+                
+                <div class="upgrade-item">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                            💻 Базовый ПК
+                            <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem;">
+                                Ур. <span id="upgradePcLevel">0</span>
+                            </span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--tg-theme-hint-color, #666); margin: 5px 0;">
+                            +0.5 H/s к ручному майнингу
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--accent); font-weight: bold;">
+                            <span id="upgradePcCost">50</span> BTC
+                        </div>
+                    </div>
+                    <button class="upgrade-button" onclick="buyUpgrade('pc')" id="upgradePcBtn">
+                        Купить
+                    </button>
+                </div>
+
+                <div class="upgrade-item">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; display: flex; align-items: center; gap: 8px;">
+                            🎮 Игровая видеокарта
+                            <span style="background: var(--primary); color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem;">
+                                Ур. <span id="upgradeGpuLevel">0</span>
+                            </span>
+                        </div>
+                        <div style="font-size: 0.8rem; color: var(--tg-theme-hint-color, #666); margin: 5px 0;">
+                            +2 H/s к ручному майнингу
+                        </div>
+                        <div style="font-size: 0.85rem; color: var(--accent); font-weight: bold;">
+                            <span id="upgradeGpuCost">200</span> BTC
+                        </div>
+                    </div>
+                    <button class="upgrade-button" onclick="buyUpgrade('gpu')" id="upgradeGpuBtn">
+                        Купить
+                    </button>
+                </div>
+            </div>
         </div>
 
         <div id="boosters" class="tab-content">
-            <!-- Контент бустеров -->
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px;">⚡ Бустеры</h3>
+                <div style="text-align: center; color: var(--tg-theme-hint-color, #666);">
+                    Система бустеров в разработке...
+                </div>
+            </div>
         </div>
 
-        <div id="clan" class="tab-content">
-            <!-- Контент клана -->
+        <div id="profile" class="tab-content">
+            <div class="card">
+                <h3 style="text-align: center; margin-bottom: 20px;">👤 Профиль</h3>
+                <div style="text-align: center; color: var(--tg-theme-hint-color, #666);">
+                    Профиль пользователя в разработке...
+                </div>
+            </div>
         </div>
     </div>
 
@@ -705,10 +784,6 @@
             <i class="fas fa-bolt"></i>
             <span>Бустеры</span>
         </button>
-        <button class="nav-button" onclick="switchTab('clan')">
-            <i class="fas fa-users"></i>
-            <span>Клан</span>
-        </button>
         <button class="nav-button" onclick="switchTab('profile')">
             <i class="fas fa-user-cog"></i>
             <span>Профиль</span>
@@ -716,44 +791,47 @@
     </div>
 
     <script>
-        // Расширенный класс приложения
+        // Основной класс приложения
         class CryptoMinerMAX {
             constructor() {
                 this.tg = window.Telegram.WebApp;
                 this.isPremium = false;
                 this.gameData = null;
+                this.holdTimer = null;
                 this.init();
             }
 
             async init() {
-                await this.setupTelegram();
-                await this.createParticles();
-                await this.loadGameData();
-                this.setupEventListeners();
-                this.startGameLoop();
-                this.hideLoadingScreen();
+                try {
+                    await this.setupTelegram();
+                    await this.createParticles();
+                    await this.loadGameData();
+                    this.setupEventListeners();
+                    this.startGameLoop();
+                    this.hideLoadingScreen();
+                } catch (error) {
+                    console.error('Initialization error:', error);
+                    this.hideLoadingScreen();
+                }
             }
 
             async setupTelegram() {
-                // Расширяем приложение
+                if (!this.tg) {
+                    console.warn('Telegram Web App not available');
+                    return;
+                }
+
                 this.tg.expand();
                 this.tg.enableClosingConfirmation();
                 
-                // Настройка темы
-                this.tg.setHeaderColor('#00ff88');
-                this.tg.setBackgroundColor('#0f0f23');
-                
-                // Проверка премиум статуса
-                this.isPremium = this.tg.initDataUnsafe.user?.is_premium || false;
-                
-                // Настройка основной кнопки
+                this.isPremium = this.tg.initDataUnsafe?.user?.is_premium || false;
                 this.setupMainButton();
-                
-                // Загрузка пользовательских данных
                 this.loadUserProfile();
             }
 
             setupMainButton() {
+                if (!this.tg?.MainButton) return;
+                
                 if (!this.isPremium) {
                     this.tg.MainButton.setText('💎 АКТИВИРОВАТЬ ПРЕМИУМ');
                     this.tg.MainButton.color = '#ffd700';
@@ -764,23 +842,28 @@
             }
 
             loadUserProfile() {
-                const user = this.tg.initDataUnsafe.user;
+                const user = this.tg?.initDataUnsafe?.user;
                 if (user) {
                     document.getElementById('userName').textContent = user.first_name || 'Аноним';
-                    document.getElementById('userId').textContent = user.id.toString().slice(-6);
+                    document.getElementById('userId').textContent = String(user.id || '000000').slice(-6);
                     
                     const avatar = document.getElementById('userAvatar');
                     if (user.photo_url) {
-                        avatar.innerHTML = `<img src="${user.photo_url}" style="width: 100%; height: 100%; border-radius: 50%;">`;
+                        avatar.style.backgroundImage = `url(${user.photo_url})`;
+                        avatar.style.backgroundSize = 'cover';
+                        avatar.innerHTML = '';
                     } else {
-                        avatar.innerHTML = user.first_name ? user.first_name[0].toUpperCase() : '<i class="fas fa-user"></i>';
+                        const initial = user.first_name ? user.first_name[0].toUpperCase() : 'U';
+                        avatar.innerHTML = initial;
                     }
                 }
             }
 
             async createParticles() {
                 const container = document.getElementById('particlesContainer');
-                for (let i = 0; i < 50; i++) {
+                if (!container) return;
+
+                for (let i = 0; i < 30; i++) {
                     const particle = document.createElement('div');
                     particle.className = 'particle';
                     particle.style.width = `${Math.random() * 4 + 1}px`;
@@ -789,38 +872,29 @@
                     particle.style.animationDelay = `${Math.random() * 20}s`;
                     particle.style.animationDuration = `${Math.random() * 10 + 15}s`;
                     particle.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                    particle.style.opacity = Math.random() * 0.5 + 0.1;
+                    particle.style.opacity = Math.random() * 0.3 + 0.1;
                     container.appendChild(particle);
                 }
             }
 
             async loadGameData() {
-                // Показываем прогресс загрузки
                 this.updateLoadingProgress(30);
-                
-                // Загрузка из Cloud Storage
-                let cloudData = null;
-                if (this.tg.CloudStorage) {
-                    cloudData = await this.tg.CloudStorage.getItem('minerData');
-                }
-                
-                this.updateLoadingProgress(60);
                 
                 // Загрузка из Local Storage
                 const localData = localStorage.getItem('cryptoMinerMAX');
                 
-                this.updateLoadingProgress(80);
+                this.updateLoadingProgress(70);
                 
                 // Объединение данных
-                this.gameData = this.mergeGameData(cloudData, localData);
+                this.gameData = this.mergeGameData(localData);
                 
                 this.updateLoadingProgress(100);
             }
 
-            mergeGameData(cloudData, localData) {
+            mergeGameData(localData) {
                 const defaultData = {
                     version: '2.0.0',
-                    balance: 1000,
+                    balance: 100,
                     hashrate: 1,
                     level: 1,
                     experience: 0,
@@ -828,38 +902,29 @@
                     energy: 100,
                     maxEnergy: 100,
                     upgrades: {
-                        cpu: { level: 0, cost: 100 },
-                        gpu: { level: 0, cost: 500 },
-                        asic: { level: 0, cost: 2000 },
-                        farm: { level: 0, cost: 10000 },
-                        quantum: { level: 0, cost: 50000 }
+                        pc: { level: 0, cost: 50 },
+                        gpu: { level: 0, cost: 200 },
+                        asic: { level: 0, cost: 500 },
+                        farm: { level: 0, cost: 2000 }
                     },
-                    boosters: {
-                        turbo: { count: 0, multiplier: 2 },
-                        energy: { count: 0, bonus: 50 },
-                        luck: { count: 0, chance: 0.1 }
-                    },
-                    clan: null,
-                    achievements: [],
                     statistics: {
                         totalClicks: 0,
-                        playTime: 0,
-                        boostersUsed: 0
+                        playTime: 0
                     },
                     lastUpdate: Date.now(),
-                    userId: this.tg.initDataUnsafe.user?.id || 'anonymous'
+                    userId: this.tg?.initDataUnsafe?.user?.id || 'anonymous'
                 };
 
-                // Сложная логика слияния данных
-                return { ...defaultData, ...this.parseData(cloudData), ...this.parseData(localData) };
-            }
-
-            parseData(data) {
                 try {
-                    return data ? JSON.parse(data) : {};
-                } catch {
-                    return {};
+                    if (localData) {
+                        const parsed = JSON.parse(localData);
+                        return { ...defaultData, ...parsed };
+                    }
+                } catch (error) {
+                    console.error('Error parsing game data:', error);
                 }
+
+                return defaultData;
             }
 
             updateLoadingProgress(percent) {
@@ -873,18 +938,20 @@
                 const loadingScreen = document.getElementById('loadingScreen');
                 const mainContent = document.getElementById('mainContent');
                 
-                loadingScreen.style.opacity = '0';
-                setTimeout(() => {
-                    loadingScreen.style.display = 'none';
-                    mainContent.style.display = 'block';
-                    
-                    // Анимация появления контента
-                    mainContent.style.animation = 'fadeIn 0.8s ease-out';
-                }, 500);
+                if (loadingScreen && mainContent) {
+                    loadingScreen.style.opacity = '0';
+                    setTimeout(() => {
+                        loadingScreen.style.display = 'none';
+                        mainContent.style.display = 'block';
+                        mainContent.style.animation = 'fadeIn 0.8s ease-out';
+                    }, 500);
+                }
             }
 
             // Основные игровые методы
             mine() {
+                if (!this.gameData) return;
+
                 if (this.gameData.energy <= 0) {
                     this.showNotification('⚡ Зарядите энергию!');
                     return;
@@ -896,7 +963,7 @@
                 // Критический удар
                 if (Math.random() < 0.05) {
                     mined *= 3;
-                    this.showNotification('💥 КРИТИЧЕСКИЙ УДАР! x3', 'warning');
+                    this.showNotification('💥 КРИТИЧЕСКИЙ УДАР! x3');
                 }
 
                 // Умножение за премиум
@@ -912,7 +979,9 @@
                 this.checkAchievements();
                 
                 // Тактильная отдача
-                if (navigator.vibrate) navigator.vibrate([50, 30, 50]);
+                if (navigator.vibrate) {
+                    navigator.vibrate(50);
+                }
             }
 
             startGameLoop() {
@@ -929,94 +998,127 @@
                 setInterval(() => this.updateDisplay(), 100);
             }
 
-            async saveGame() {
-                this.gameData.lastUpdate = Date.now();
+            autoMine() {
+                if (!this.gameData) return;
+
+                const now = Date.now();
+                const timePassed = (now - this.gameData.lastUpdate) / 1000;
                 
-                // Сохранение в Local Storage
-                localStorage.setItem('cryptoMinerMAX', JSON.stringify(this.gameData));
-                
-                // Синхронизация с облаком
-                if (this.tg.CloudStorage) {
-                    await this.tg.CloudStorage.setItem('minerData', JSON.stringify(this.gameData));
+                if (timePassed > 0) {
+                    const autoIncome = this.gameData.upgrades.asic.level * 1 + this.gameData.upgrades.farm.level * 5;
+                    const mined = autoIncome * timePassed;
+                    
+                    this.gameData.balance += mined;
+                    this.gameData.totalMined += mined;
+                    this.gameData.lastUpdate = now;
                 }
             }
 
-            showNotification(message, type = 'info') {
+            regenEnergy() {
+                if (!this.gameData) return;
+
+                if (this.gameData.energy < this.gameData.maxEnergy) {
+                    this.gameData.energy += 0.5;
+                }
+            }
+
+            async saveGame() {
+                if (!this.gameData) return;
+
+                this.gameData.lastUpdate = Date.now();
+                
+                try {
+                    localStorage.setItem('cryptoMinerMAX', JSON.stringify(this.gameData));
+                } catch (error) {
+                    console.error('Save error:', error);
+                }
+            }
+
+            buyUpgrade(type) {
+                if (!this.gameData) return;
+
+                const upgrade = this.gameData.upgrades[type];
+                if (!upgrade) return;
+
+                if (this.gameData.balance >= upgrade.cost) {
+                    this.gameData.balance -= upgrade.cost;
+                    upgrade.level++;
+                    upgrade.cost = Math.floor(upgrade.cost * 1.5);
+                    
+                    // Применяем эффекты
+                    switch(type) {
+                        case 'pc': 
+                            this.gameData.hashrate += 0.5; 
+                            break;
+                        case 'gpu': 
+                            this.gameData.hashrate += 2; 
+                            break;
+                    }
+                    
+                    this.showNotification('✅ Улучшение куплено!');
+                    this.updateDisplay();
+                    this.saveGame();
+                } else {
+                    this.showNotification('❌ Недостаточно BTC!');
+                }
+            }
+
+            showNotification(message) {
                 const notification = document.createElement('div');
-                notification.className = `notification ${type}`;
+                notification.className = 'notification';
                 notification.textContent = message;
                 
                 document.body.appendChild(notification);
                 
                 setTimeout(() => {
                     notification.style.opacity = '0';
-                    setTimeout(() => notification.remove(), 500);
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 500);
                 }, 3000);
             }
 
             createClickAnimation(amount) {
                 const animation = document.createElement('div');
                 animation.className = 'click-animation';
-                animation.innerHTML = `
-                    <div style="color: var(--primary);">+${amount.toFixed(1)}</div>
-                    <div style="font-size: 0.8rem; color: var(--secondary);">BTC</div>
-                `;
+                animation.textContent = `+${amount.toFixed(1)}`;
                 
                 animation.style.left = `${Math.random() * 200 + 100}px`;
                 animation.style.top = `${Math.random() * 100 + 200}px`;
                 
                 document.body.appendChild(animation);
-                setTimeout(() => animation.remove(), 1200);
+                setTimeout(() => {
+                    if (animation.parentNode) {
+                        animation.parentNode.removeChild(animation);
+                    }
+                }, 1200);
             }
 
             setupEventListeners() {
-                // Долгое нажатие для быстрого майнинга
-                this.setupHoldToMine();
-                
-                // Обработка системных событий
-                this.tg.onEvent('viewportChanged', () => this.saveGame());
-                window.addEventListener('beforeunload', () => this.saveGame());
-                
-                // Обработка изменения темы
-                this.tg.onEvent('themeChanged', () => this.updateTheme());
-            }
-
-            setupHoldToMine() {
-                let holdTimer;
+                // Обычный клик для майнинга
                 const mineButton = document.getElementById('mineButton');
-                
-                const startMining = () => {
-                    this.mine();
-                    holdTimer = setInterval(() => this.mine(), 150);
-                };
-                
-                const stopMining = () => {
-                    clearInterval(holdTimer);
-                };
-                
-                // Touch события
-                mineButton.addEventListener('touchstart', startMining);
-                mineButton.addEventListener('touchend', stopMining);
-                mineButton.addEventListener('touchcancel', stopMining);
-                
-                // Mouse события
-                mineButton.addEventListener('mousedown', startMining);
-                mineButton.addEventListener('mouseup', stopMining);
-                mineButton.addEventListener('mouseleave', stopMining);
-            }
+                if (mineButton) {
+                    mineButton.addEventListener('click', () => this.mine());
+                }
 
-            updateTheme() {
-                // Динамическое обновление темы
-                document.body.style.setProperty('--tg-theme-bg-color', this.tg.themeParams.bg_color || '#0f0f23');
-                document.body.style.setProperty('--tg-theme-text-color', this.tg.themeParams.text_color || '#ffffff');
+                // Обработка системных событий
+                if (this.tg) {
+                    this.tg.onEvent('viewportChanged', () => this.saveGame());
+                }
+                window.addEventListener('beforeunload', () => this.saveGame());
             }
 
             updateDisplay() {
+                if (!this.gameData) return;
+
                 // Обновление всех элементов интерфейса
                 this.updateBalance();
                 this.updateStats();
                 this.updateEnergy();
                 this.updateLevel();
+                this.updateUpgrades();
                 this.updateBadges();
             }
 
@@ -1028,32 +1130,64 @@
             }
 
             updateStats() {
-                // Обновление статистики
-                document.getElementById('hashrate').textContent = this.gameData.hashrate.toFixed(1);
-                document.getElementById('totalMined').textContent = this.gameData.totalMined.toFixed(1);
-                document.getElementById('userLevel').textContent = this.gameData.level;
+                if (!this.gameData) return;
+
+                const elements = {
+                    hashrate: this.gameData.hashrate.toFixed(1),
+                    totalMined: this.gameData.totalMined.toFixed(1),
+                    userLevel: this.gameData.level
+                };
+
+                Object.entries(elements).forEach(([id, value]) => {
+                    const element = document.getElementById(id);
+                    if (element) {
+                        element.textContent = value;
+                    }
+                });
+
+                // Автоматический доход
+                const autoIncome = this.gameData.upgrades.asic.level * 1 + this.gameData.upgrades.farm.level * 5;
+                const autoIncomeElement = document.getElementById('autoIncome');
+                if (autoIncomeElement) {
+                    autoIncomeElement.textContent = autoIncome.toFixed(1);
+                }
             }
 
             updateEnergy() {
                 const energyElement = document.getElementById('energy');
-                if (energyElement) {
+                if (energyElement && this.gameData) {
                     energyElement.textContent = Math.floor(this.gameData.energy);
                 }
             }
 
             updateLevel() {
-                const expNeeded = this.gameData.level * 1000;
-                const progress = (this.gameData.experience / expNeeded) * 100;
-                // Обновление прогресс-бара уровня
+                // Можно добавить логику прогресса уровня
+            }
+
+            updateUpgrades() {
+                if (!this.gameData) return;
+
+                // Обновление информации об улучшениях
+                Object.entries(this.gameData.upgrades).forEach(([type, upgrade]) => {
+                    const levelElement = document.getElementById(`upgrade${type.charAt(0).toUpperCase() + type.slice(1)}Level`);
+                    const costElement = document.getElementById(`upgrade${type.charAt(0).toUpperCase() + type.slice(1)}Cost`);
+                    const buttonElement = document.getElementById(`upgrade${type.charAt(0).toUpperCase() + type.slice(1)}Btn`);
+
+                    if (levelElement) levelElement.textContent = upgrade.level;
+                    if (costElement) costElement.textContent = upgrade.cost;
+                    if (buttonElement) {
+                        buttonElement.disabled = this.gameData.balance < upgrade.cost;
+                    }
+                });
             }
 
             updateBadges() {
-                // Обновление бейджей уведомлений
                 this.updateUpgradeBadges();
-                this.updateBoosterBadges();
             }
 
             updateUpgradeBadges() {
+                if (!this.gameData) return;
+
                 const canAffordUpgrade = Object.values(this.gameData.upgrades).some(upgrade => 
                     this.gameData.balance >= upgrade.cost
                 );
@@ -1061,10 +1195,13 @@
                 const badge = document.getElementById('upgradeBadge');
                 if (badge) {
                     badge.style.display = canAffordUpgrade ? 'block' : 'none';
+                    badge.textContent = '!';
                 }
             }
 
             showPremiumOffer() {
+                if (!this.tg?.showPopup) return;
+
                 this.tg.showPopup({
                     title: '💎 ПРЕМИУМ ДОСТУП',
                     message: 'Разблокируйте эксклюзивные возможности:',
@@ -1079,11 +1216,6 @@
                             type: 'default',
                             text: '💎 Год - 2,990 ₽'
                         },
-                        {
-                            id: 'premium_lifetime',
-                            type: 'default', 
-                            text: '👑 Навсегда - 9,990 ₽'
-                        },
                         { type: 'cancel' }
                     ]
                 }, (buttonId) => {
@@ -1094,35 +1226,30 @@
             }
 
             processPremiumPurchase(planId) {
-                // Логика обработки покупки
-                this.tg.openInvoice(`premium_${planId}`);
+                this.showNotification('💳 Система платежей в разработке');
             }
 
             checkAchievements() {
-                // Проверка и выдача достижений
-                const achievements = [
-                    { condition: () => this.gameData.totalMined >= 1000, id: 'first_thousand' },
-                    { condition: () => this.gameData.level >= 10, id: 'level_10' },
-                    { condition: () => this.gameData.statistics.totalClicks >= 1000, id: 'click_master' }
-                ];
-
-                achievements.forEach(achievement => {
-                    if (achievement.condition() && !this.gameData.achievements.includes(achievement.id)) {
-                        this.unlockAchievement(achievement.id);
-                    }
-                });
+                // Базовая проверка достижений
+                if (this.gameData.totalMined >= 1000 && !this.gameData.achievements) {
+                    this.unlockAchievement('first_thousand');
+                }
             }
 
             unlockAchievement(achievementId) {
-                this.gameData.achievements.push(achievementId);
-                this.showAchievementPopup(achievementId);
+                if (!this.gameData.achievements) {
+                    this.gameData.achievements = [];
+                }
+
+                if (!this.gameData.achievements.includes(achievementId)) {
+                    this.gameData.achievements.push(achievementId);
+                    this.showAchievementPopup(achievementId);
+                }
             }
 
             showAchievementPopup(achievementId) {
                 const achievements = {
-                    'first_thousand': { title: '🎯 Первая тысяча', description: 'Добудьте 1000 BTC' },
-                    'level_10': { title: '🚀 Уровень 10', description: 'Достигните 10 уровня' },
-                    'click_master': { title: '👑 Мастер кликов', description: 'Сделайте 1000 кликов' }
+                    'first_thousand': { title: '🎯 Первая тысяча', description: 'Добудьте 1000 BTC', reward: 500 }
                 };
 
                 const achievement = achievements[achievementId];
@@ -1134,16 +1261,20 @@
                         <div style="font-size: 1.3rem; font-weight: 900; margin-bottom: 10px;">${achievement.title}</div>
                         <div style="font-size: 1rem; opacity: 0.9;">${achievement.description}</div>
                         <div style="margin-top: 20px; font-size: 0.9rem; color: var(--accent);">
-                            +500 BTC награда!
+                            +${achievement.reward} BTC награда!
                         </div>
                     `;
                     
                     document.body.appendChild(popup);
-                    this.gameData.balance += 500;
+                    this.gameData.balance += achievement.reward;
                     
                     setTimeout(() => {
                         popup.style.opacity = '0';
-                        setTimeout(() => popup.remove(), 500);
+                        setTimeout(() => {
+                            if (popup.parentNode) {
+                                popup.parentNode.removeChild(popup);
+                            }
+                        }, 500);
                     }, 4000);
                 }
             }
@@ -1167,7 +1298,15 @@
                 btn.classList.remove('active');
             });
             
-            event.target.closest('.tab-button, .nav-button').classList.add('active');
+            // Найти кнопку, которая вызвала переключение
+            let sourceButton = event.target;
+            while (sourceButton && !sourceButton.classList.contains('tab-button') && !sourceButton.classList.contains('nav-button')) {
+                sourceButton = sourceButton.parentElement;
+            }
+            
+            if (sourceButton) {
+                sourceButton.classList.add('active');
+            }
         }
 
         function mine() {
@@ -1176,17 +1315,16 @@
             }
         }
 
+        function buyUpgrade(type) {
+            if (window.minerApp) {
+                window.minerApp.buyUpgrade(type);
+            }
+        }
+
         // Инициализация при загрузке
-        document.addEventListener('DOMContentLoaded', async () => {
+        document.addEventListener('DOMContentLoaded', () => {
             window.minerApp = new CryptoMinerMAX();
         });
-
-        // Регистрация Service Worker для PWA
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js')
-                .then(() => console.log('SW registered'))
-                .catch(console.error);
-        }
 
         // Обработка ошибок
         window.addEventListener('error', (e) => {
